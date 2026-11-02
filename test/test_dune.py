@@ -86,7 +86,7 @@ class TestDUNEPolicyPackage(unittest.TestCase):
         self.generated_file_dids = []
         self.generated_dataset_dids = []
 
-    #@pytest.mark.xfail(reason="Rucio bug appears to be preventing permission check from working")
+    @pytest.mark.xfail(reason="Rucio bug #8860 means rucio upload always returns exit code 0")
     def test_dataset_permissions(self):
         """DUNE(PERMISSION): rucio upload dataset with and without MetaCat entries"""
         if self.rse is None:
@@ -156,7 +156,7 @@ class TestDUNEPolicyPackage(unittest.TestCase):
         print(out)
         print(err)
         # The files should be there
-        cmd = 'ls /tmp/{0}/rucio_testfile_*'.format(tmp_dsn1)
+        cmd = 'ls /tmp/{0}/file_*'.format(tmp_dsn1)
         print(self.marker + cmd)
         exitcode, out, err = execute(cmd)
         print(err, out)
@@ -169,7 +169,7 @@ class TestDUNEPolicyPackage(unittest.TestCase):
         self.generated_file_dids += [ file_did1, file_did2, file_did3 ]
         self.generated_dataset_dids += [ dataset_did1, dataset_did2 ]
 
-    #@pytest.mark.xfail(reason="permission check is bypassed when creating file DIDs due to Rucio bug")
+    @pytest.mark.xfail(reason="Rucio bug #8860 means rucio upload always returns exit code 0")
     def test_file_permissions(self):
         """DUNE(PERMISSION): rucio upload files with and without MetaCat entries"""
         if self.rse is None:
@@ -235,7 +235,7 @@ class TestDUNEPolicyPackage(unittest.TestCase):
         print(out)
         print(err)
         # The files should be there
-        cmd = 'ls /tmp/{0}/rucio_testfile_*'.format(tmp_dsn)
+        cmd = 'ls /tmp/{0}/file_*'.format(tmp_dsn)
         print(self.marker + cmd)
         exitcode, out, err = execute(cmd)
         print(err, out)

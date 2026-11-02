@@ -63,6 +63,9 @@ jobs:
 
           # copy accounts config template
           docker exec -t dev-rucio-1 cp etc/rse-accounts.cfg.template etc/rse-accounts.cfg
+
+          # restart server to make sure it loads DUNE's policy package
+          docker exec -t dev-rucio-1 httpd -k graceful
       - name: Initialise tests in container
         shell: bash
         run: docker exec -t dev-rucio-1 tools/run_tests.sh -ir

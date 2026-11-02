@@ -24,7 +24,6 @@ from rucio.core.rse import list_rse_attributes
 from rucio.core.rse_expression_parser import parse_expression
 from rucio.db.sqla.constants import DIDType, IdentityType
 import functools
-import logging
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -417,14 +416,11 @@ def perm_add_did(issuer: "InternalAccount", kwargs: dict[str, Any], *, session: 
     :param session: The DB session to use
     :returns: True if account is allowed, otherwise False
     """
-
-    logger = logging.getLogger("DUNERucioPolicy")
-    logger(logging.DEBUG, 'Received perm_add_did request')
     
-    if kwargs["type"] == DIDType.FILE and not _files_exist([kwargs]):
+    if kwargs["type"] in ("F", "FILE", DIDType.FILE) and not _files_exist([kwargs]):
         return False
 
-    if (kwargs["type"] == DIDType.DATASET or kwargs["type"] == DIDType.CONTAINER) and not _dataset_exists(kwargs):
+    if (kwargs["type"] in ("D", "DATASET", DIDType.DATASET) or kwargs["type"] in ("C", "CONTAINER", DIDType.CONTAINER)) and not _dataset_exists(kwargs):
         return False
 
     # Check the accounts of the issued rules
@@ -450,9 +446,6 @@ def perm_add_dids(issuer: "InternalAccount", kwargs: dict[str, Any], *, session:
     :returns: True if account is allowed, otherwise False
     """
 
-    logger = logging.getLogger("DUNERucioPolicy")
-    logger(logging.DEBUG, 'Received perm_add_dids request')
-    
     files = [did for did in kwargs["dids"] if did.get("type") in ("F", "FILE", DIDType.FILE)]
 
     if files and not _files_exist(files):
